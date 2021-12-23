@@ -1,5 +1,6 @@
 package com.example.simpletodo
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var adapter: TaskItemAdapter
 
+    val REQUEST_CODE: Int = 20
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,17 +34,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        fun launchEditView(position: Int) {
-//            val i = Intent(this@MainActivity, EditActivity::class.java)
-//            i.putExtra("taskText", listOfTasks.get(position))
-//            startActivity(i)
-//        }
-//
-//        val onClickListener = object : TaskItemAdapter.OnClickListener {
-//            override fun onItemClicked(position: Int) {
-//                launchEditView(position)
-//            }
-//        }
+        val onClickListener = object : TaskItemAdapter.OnClickListener {
+            override fun onItemClicked(position: Int) {
+                try {
+                    val i = Intent(this@MainActivity, EditActivity::class.java)
+                    i.putExtra("taskText", listOfTasks.get(position))
+                    i.putExtra("position", position)
+                    startActivityForResult(i, REQUEST_CODE)
+                } catch (noActivity: ActivityNotFoundException) {
+                    noActivity.printStackTrace()
+                }
+            }
+        }
 
         loadItems()
 
@@ -51,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        adapter = TaskItemAdapter(listOfTasks, onLongClickListener)//, onClickListener)
+        adapter = TaskItemAdapter(listOfTasks, onLongClickListener, onClickListener)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -62,6 +66,20 @@ class MainActivity : AppCompatActivity() {
             listOfTasks.add(userInputtedTask)
             adapter.notifyItemInserted(listOfTasks.size-1)
             inputTextField.setText("")
+            saveItems()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            val editedTask = data!!.getStringExtra("editedTask").toString()
+            val position = data!!.getIntExtra("position", listOfTasks.size-1)
+            val code = data?.getIntExtra("code", 0)
+
+            listOfTasks.set(position, editedTask)
+            adapter.notifyDataSetChanged()
             saveItems()
         }
     }
