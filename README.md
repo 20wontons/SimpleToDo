@@ -26,7 +26,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='walkthrough.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -34,9 +34,11 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
+* I was unsure of how to resolve the issue with the ? operator on various data types, particularly on Intent?, String? and Int? when I was implementing the Edit functionality. Upon further research I understand now that the difference between ? and !! is that !! will raise a null exception when the value is null.
+
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright 2021 Antoine Nguyen
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
