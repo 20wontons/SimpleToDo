@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val onLongClickListener = object : TaskItemAdapter.OnLongClickListener {
             override fun onItemLongClicked(position: Int) {
                 listOfTasks.removeAt(position)
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRemoved(position)
                 saveItems()
             }
         }
@@ -75,11 +75,10 @@ class MainActivity : AppCompatActivity() {
         // REQUEST_CODE is defined above
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             val editedTask = data!!.getStringExtra("editedTask").toString()
-            val position = data!!.getIntExtra("position", listOfTasks.size-1)
-            val code = data?.getIntExtra("code", 0)
+            val position = data.getIntExtra("position", listOfTasks.size-1)
 
             listOfTasks.set(position, editedTask)
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemChanged(position)
             saveItems()
         }
     }
